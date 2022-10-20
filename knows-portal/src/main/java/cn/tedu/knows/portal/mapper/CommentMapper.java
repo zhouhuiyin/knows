@@ -1,6 +1,6 @@
 package cn.tedu.knows.portal.mapper;
 
-import cn.tedu.knows.portal.model.Tag;
+import cn.tedu.knows.portal.model.Comment;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 * @since 2022-10-21
 */
     @Repository
-    public interface TagMapper extends BaseMapper<Tag> {
+    public interface CommentMapper extends BaseMapper<Comment> {
 
     }
