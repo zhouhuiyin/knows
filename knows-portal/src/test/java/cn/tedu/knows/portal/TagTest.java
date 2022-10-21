@@ -6,6 +6,8 @@ import cn.tedu.knows.portal.model.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -21,6 +23,30 @@ public class TagTest {
         for(Tag t:tags){
             System.out.println(t);
         }
+    }
+
+    // 密码加密操作
+    PasswordEncoder encoder=new BCryptPasswordEncoder();
+    // 加密操作
+    @Test
+    public void pwd(){
+        String str="123456";
+        // 执行加密操作encode方法参数是要加密的字符串,返回值是加密结果
+        String pwd=encoder.encode(str);
+        System.out.println(pwd);
+        //$2a$10$7sArRpk0xhLtR7.c.T9Uw.XYkqIpQFhPBGsYJmY/Qk1EgkbDUtl4m
+        //$2a$10$QY6cYVIe7kItV81rQ2R3uOhmmLzN8GTjkowj17St1oggC2HCAlc8O
+    }
+
+    // 验证操作
+    @Test
+    public void match(){
+        // 验证需要提供两个参数:1.原字符串  2.加密字符串
+        // 方法能验证原字符串是否可以加密为加密字符串
+        // 返回结果为boolean类型
+        boolean b=encoder.matches("123456",
+                "$2a$10$QY6cYVIe7kItV81rQ2R3uOhmmLzN8GTjkowj17St1oggC2HCAlc8O");
+        System.out.println("验证结果为:"+b);
     }
 
 }

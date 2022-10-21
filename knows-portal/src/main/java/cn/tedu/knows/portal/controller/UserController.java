@@ -1,6 +1,7 @@
 package cn.tedu.knows.portal.controller;
 
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,6 +27,20 @@ public class UserController {
     @GetMapping("/demo")
     public String demo(){
         return "hello demo!";
+    }
+
+    @GetMapping("/ask")
+    // 规定当前控制器方法需要特殊授权才能访问
+    // 其他控制方法登录就能访问,添加下面注解指定特殊权限
+    @PreAuthorize("hasAuthority('answer')")
+    public String ask(){
+        return "可以开始回答问题了!";
+    }
+
+    @GetMapping("/delete")
+    @PreAuthorize("hasAuthority('remove')")
+    public String delete(){
+        return "可以开始删除了!";
     }
 
 }
