@@ -1,5 +1,6 @@
 package cn.tedu.knows.portal.mapper;
 
+import cn.tedu.knows.portal.model.Permission;
 import cn.tedu.knows.portal.model.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
@@ -26,7 +27,7 @@ public interface UserMapper extends BaseMapper<User> {
             "                       ON r.id=rp.role_id\n" +
             "LEFT JOIN permission p ON p.id=rp.permission_id\n" +
             "WHERE u.id=#{id};")
-    List<PermissionMapper> findUserPermissionsById(Integer id);
+    List<Permission> findUserPermissionsById(Integer id);
 
     // 根据用户名查询用户信息
     @Select("select * from user where username=#{username}")
