@@ -20,6 +20,7 @@ let app = new Vue({
             form.append("confirm",this.confirm);
             console.log(form);
             if(this.password != this.confirm){
+                console.log("两次密码输入不一致!")
                 this.message = "确认密码不一致！";
                 this.hasError = true;
                 return;
@@ -31,7 +32,7 @@ let app = new Vue({
             })
                 .then(function(r) {
                     console.log("|"+r.status+"|"+OK+"|");
-                    if(r.status == OK){
+                    if(r.data=="ok"){
                         console.log("注册成功");
                         console.log(r.data);
                         app.hasError = false;
