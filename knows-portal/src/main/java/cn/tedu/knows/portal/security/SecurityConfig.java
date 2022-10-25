@@ -34,7 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests() //开始设置页面范文权限
         //指定路径
         .antMatchers(
-                "/index_student.html",
                 "/css/*",
                 "/js/*",
                 "/img/**",

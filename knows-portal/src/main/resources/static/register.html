@@ -29,8 +29,8 @@
 
         <p class="text-center"><b>注册新用户</b></p>
 
-        <div id="error" class="alert alert-danger" style="display: none">
-          <i class="fa fa-exclamation-triangle"></i> <span >邀请码错误！</span>
+        <div id="error" class="alert alert-danger" style="display: none" :class="{'d-block':hasError}">
+          <i class="fa fa-exclamation-triangle"></i> <span v-text="message">邀请码错误！</span>
         </div>
 
         <form action="/register" method="post" @submit.prevent="register" >
