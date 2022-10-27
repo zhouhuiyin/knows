@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -87,5 +89,10 @@ public class Question implements Serializable {
     @TableField("tag_names")
     private String tagNames;
 
-
+    /**
+     * 当前问题包含的所有标签对象的list
+     */
+    // 声明当前属性不对应数据库中的任何列
+    @TableField(exist = false)
+    private List<Tag> tags;
 }

@@ -205,7 +205,7 @@
               <div class="row">
                 <div class="col-12 mt-1 text-info">
                   <i class="fa fa-tags" aria-hidden="true"></i>
-                  <a class="text-info badge badge-pill bg-light" href="tag/tag_question.html"><small >Java基础 &nbsp;</small></a>
+                  <a class="text-info badge badge-pill bg-light" href="tag/tag_question.html" v-for="tag in question.tags"><small v-text="tag.name">Java基础 &nbsp;</small></a>
                 </div>
               </div>
               <div class="row">
@@ -220,7 +220,8 @@
 
             </div>
             <!-- / class="media-body"-->
-            <img src="img/tags/example0.jpg"  class="ml-3 border img-fluid rounded" alt="" width="208" height="116">
+            <img src="img/tags/example0.jpg"  class="ml-3 border img-fluid rounded" alt="" width="208" height="116"
+            :src="question.tagImage">
           </div>
           <div class="row mt-2">
             <div class="col-6 offset-3">
