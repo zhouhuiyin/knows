@@ -3,6 +3,7 @@ package cn.tedu.knows.portal.controller;
 
 import cn.tedu.knows.portal.model.Question;
 import cn.tedu.knows.portal.service.IQuestionService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,10 +29,14 @@ public class QuestionController {
     private IQuestionService questionService;
 
     @GetMapping("/my")
-    public List<Question> my(@AuthenticationPrincipal UserDetails user){
+    public PageInfo<Question> my(@AuthenticationPrincipal UserDetails user, Integer pageNum){
         // @AuthenticationPrincipal注解效果是从Spring-Security中
         // 获得登录用户的信息对象UserDetails,赋值给后面的参数
-        return questionService.getMyQuestions(user.getUsername());
+        Integer pageSize = 8;
+        if(pageNum ==null){
+            pageNum = 1;
+        }
+        return questionService.getMyQuestions(user.getUsername(),pageNum,pageSize);
     }
 
 }

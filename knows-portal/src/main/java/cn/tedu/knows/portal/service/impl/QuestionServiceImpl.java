@@ -10,6 +10,7 @@ import cn.tedu.knows.portal.service.ITagService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     @Autowired
     private ITagService tagService; //获得包含所有标签的tagMap
     @Override
-    public List<Question> getMyQuestions(String username) {
+    public PageInfo<Question> getMyQuestions(String username,Integer pageNum,Integer pageSize) {
         // 根据用户名查询用户对象
         User user = userMapper.findUserByUsername(username);
         // 实例化QueryWrapper对象设置查询条件
@@ -47,7 +48,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // 必须编写在执行分页查询之前
         // startPage([页码],[每页条数])
         // 第一页页码为1
-        PageHelper.startPage(1,8);
+        PageHelper.startPage(pageNum,pageSize);
         // 按设置好的条件进行查询操作
         // 按设置好的条件进行查询操作
         List<Question> list=questionMapper.selectList(query);
@@ -55,8 +56,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             List<Tag> tags = tagNamesToTags(question.getTagNames());
             question.setTags(tags);
         }
-        // 千万别忘了返回list
-        return list;
+        // 千万别忘了返回pageInfo
+        return new PageInfo<>(list);
     }
 
     //将tagNames属性转换为List<Tag>的方法

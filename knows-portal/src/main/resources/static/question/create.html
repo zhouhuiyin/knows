@@ -24,6 +24,7 @@
   <script src="../bower_components/select2/dist/js/select2.min.js"></script>
   <script src="../bower_components/select2/dist/js/i18n/zh-CN.js"></script>
   <script src="../bower_components/vue-select/dist/vue-select.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
 </head>
 <body>
@@ -182,17 +183,11 @@
 </header>
 <!--引入标签的导航栏-->
 <div class="container-fluid" >
-  <div class="nav font-weight-light">
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>全部</small></a>
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>Java基础</small></a>
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>Java OOP</small></a>
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>Java SE</small></a>
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>WebServer</small></a>
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>二进制</small></a>
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>Web</small></a>
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>MySQL</small></a>
-    <a href="../tag/tag_question.html" class="nav-item nav-link text-info"><small>Servlet</small></a>
-  </div>
+<!--  调用模版 直接使用定义模板时方法第一个参数
+      调用模版模版的标签中一定要定义正确的id
+      还要写一个为模版中props中定义的属性赋值代码
+-->
+  <tags-app id="tagsApp" :tags="tags"></tags-app>
 </div>
 <div class="container-fluid mt-2 mb-1 bg-light" id="app" v-cloak>
   <div class="row">
@@ -512,4 +507,8 @@
   });
 </script>
 </body>
+<script src="../js/utils.js"></script>
+<!--  引用模板时必须先引用模板文件,再引用运行axios的js文件才能正常运行  -->
+<script src="../js/tags_nav_temp.js"></script>
+<script src="../js/tags_nav.js"></script>
 </html>

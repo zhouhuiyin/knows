@@ -16,7 +16,7 @@
   <script src="bower_components/vue/dist/vue.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
-<body>
+<body id="id">
 <header class="container-fluid mb-3 bg-light">
 
   <nav class="navbar navbar-expand-lg   navbar-light bg-light">
@@ -227,9 +227,11 @@
             <div class="col-6 offset-3">
               <nav aria-label="Page navigation example">
                 <div class="pagination">
-                  <a class="page-item page-link" href="#" >上一页</a>
-                  <a class="page-item page-link " href="#" >1</a>
-                  <a class="page-item page-link" href="#" >下一页</a>
+                  <a class="page-item page-link" href="#id" @click.prevent="loadQuestions(pageinfo.prePage)">上一页</a>
+                  <a class="page-item page-link " href="#id" v-for="n in pageinfo.navigatepageNums" v-text="n"
+                     @click.prevent="loadQuestions(n)"
+                     :class="{'bg-secondary text-white': n==pageinfo.pageNum}">1</a>
+                  <a class="page-item page-link" href="#id" @click.prevent="loadQuestions(pageinfo.nextPage)">下一页</a>
                 </div>
               </nav>
             </div>
