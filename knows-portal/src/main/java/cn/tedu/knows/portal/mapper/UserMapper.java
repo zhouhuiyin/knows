@@ -33,5 +33,9 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where username=#{username}")
     User findUserByUsername(String username);
 
+    // 查询返回所有讲师的方法
+    @Select("select * from user where type=1")
+    List<User> findTeachers();
+
 
 }

@@ -197,10 +197,10 @@
   </div>
   <div class="row">
 
-    <div class="col-8">
+    <div class="col-8" id="createQuestionApp">
       <h4 class="border-bottom m-2 p-2 font-weight-light"><i class="fa fa-question-circle-o" aria-hidden="true"></i>
         填写问题</h4>
-      <form >
+      <form @submit.prevent="createQuestion">
         <div class="form-group">
           <label for="title">标题:</label>
           <input type="text" class="form-control" id="title" name="title" placeholder="请填写标题3~50字符"
@@ -208,22 +208,20 @@
         </div>
         <div class="form-group">
           <label >请至少选择一个标签：</label>
-          <select multiple class="form-control" name="tags" >
-            <option>Java基础</option>
-            <option>Java OOP</option>
-            <option>Java SE</option>
-            <option>Spring</option>
-            <option>Spring MVC</option>
-          </select>
+          <v-select multiple required
+                    :options="tags"
+                    v-model="selectedTags"
+                    placeholder="请选择标签"
+          ></v-select>
         </div>
         <div class="form-group">
           <label >请选择老师：</label>
-          <select multiple class="form-control" name="teachers" >
-            <option>王克晶</option>
-            <option>范传奇</option>
-            <option>刘国斌</option>
-            <option>张皓岚</option>
-            <option>刘苍松</option>
+          <v-select multiple required
+                    :options="teachers"
+                    v-model="selectedTeachers"
+                    placeholder="请选择讲师"
+          >
+          </v-select>
           </select>
         </div>
         <div class="form-group">
@@ -511,4 +509,5 @@
 <!--  引用模板时必须先引用模板文件,再引用运行axios的js文件才能正常运行  -->
 <script src="../js/tags_nav_temp.js"></script>
 <script src="../js/tags_nav.js"></script>
+<script src="../js/createQuestion.js"></script>
 </html>

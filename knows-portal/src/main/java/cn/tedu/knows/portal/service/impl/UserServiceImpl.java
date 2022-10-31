@@ -17,6 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <p>
@@ -79,4 +83,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
 
     }
+
+    private List<User> teachers=new CopyOnWriteArrayList<>();
+    private Map<String,User> teacherMap=new ConcurrentHashMap<>();
+
+    @Override
+    public List<User> getTeachers() {
+        if(teachers.isEmpty()){
+            synchronized (teachers){
+                if(teachers.isEmpty()){
+                    List<User> users=userMapper.findTeachers();
+                    teachers.addAll(users);
+                    for(User u:users){
+                        teacherMap.put(u.getNickname(),u);
+                    }
+                }
+            }
+        }
+        // 千万别忘了返回teachers
+        return teachers;
+    }
+
+    @Override
+    public Map<String, User> getTeacherMap() {
+        if(teacherMap.isEmpty()){
+            getTeachers();
+        }
+        // 千万别忘了返回teacherMap
+        return teacherMap;
+    }
+
+
 }
