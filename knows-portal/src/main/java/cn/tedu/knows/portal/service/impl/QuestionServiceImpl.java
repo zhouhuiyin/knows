@@ -17,6 +17,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -78,6 +79,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     @Override
+    // 添加事务注解
+    // 实现效果:当前方法中所有sql操作要么都执行,要么都不执行
+    // 只要方法运行过程中发生异常,那么已经执行的sql语句都会"回滚"
+    @Transactional
     public void saveQuestion(QuestionVO questionVO, String username) {
         //1.根据用户名获取用户信息
         User user = userMapper.findUserByUsername(username);
@@ -135,7 +140,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
                     .setCreatetime(LocalDateTime.now());
             num=userQuestionMapper.insert(userQuestion);
             if(num!=1){
-                throw new ServiceException("数据库忙");
+                throw new ServiceException("数据库异常");
             }
             log.debug("新增了问题和讲师的关系:{}",userQuestion);
         }

@@ -31,15 +31,8 @@ public class SystemController {
             String msg=result.getFieldError().getDefaultMessage();
             return msg;
         }
-        try{
-            userService.registerStudent(registerVO);
-            return "ok";
-        }catch (ServiceException e){
-            // 将错误信息输出到日志的error级别
-            log.error("注册失败",e);
-            // 将错误信息响应给前端
-            return e.getMessage();
-        }
+        userService.registerStudent(registerVO);
+        return "ok";
     }
 
 }

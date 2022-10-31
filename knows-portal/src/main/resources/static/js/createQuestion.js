@@ -25,9 +25,12 @@ let createQuestionApp = new Vue({
                 data:form,
             }).then(function(r){
                 console.log(r.data);
-                if(r.status==OK){
-                    location.href="/index.html";
+                if(r.data=="ok"){
+                    location.href="/index_student.html";
+                }else {
+                    console.log(r.data);
                 }
+
             })
         },
         loadTags:function () {

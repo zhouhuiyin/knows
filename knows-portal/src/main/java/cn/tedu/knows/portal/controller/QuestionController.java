@@ -1,6 +1,7 @@
 package cn.tedu.knows.portal.controller;
 
 
+import cn.tedu.knows.portal.exception.ServiceException;
 import cn.tedu.knows.portal.model.Question;
 import cn.tedu.knows.portal.service.IQuestionService;
 import cn.tedu.knows.portal.vo.QuestionVO;
@@ -46,19 +47,19 @@ public class QuestionController {
     }
 
     // 学生发布问题访问的控制层方法
-// @PostMapping("")表示访问它的路径为localhost:8080/v1/questions
+    // @PostMapping("")表示访问它的路径为localhost:8080/v1/questions
     @PostMapping("")
     public String createQuestion(
             @Validated QuestionVO questionVO,
-            BindingResult result){
+            BindingResult result,@AuthenticationPrincipal UserDetails user){
         log.debug("接收表单信息为:{}",questionVO);
         if(result.hasErrors()){
             String msg=result.getFieldError().getDefaultMessage();
             return msg;
         }
         // 在这里调用业务逻辑层的新增问题方法
+        questionService.saveQuestion(questionVO,user.getUsername());
         // 返回运行信息
         return "ok";
     }
-
 }
