@@ -1,6 +1,7 @@
 package cn.tedu.knows.portal.service;
 
 import cn.tedu.knows.portal.model.Question;
+import cn.tedu.knows.portal.vo.QuestionVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 
@@ -20,4 +21,6 @@ public interface IQuestionService extends IService<Question> {
     // 返回值PageInfo,既包含问题列表List,又包含分页信息的对象
     PageInfo<Question> getMyQuestions(String username, Integer pageNum, Integer pageSize);
 
+    //学生发布问题的方法
+    void saveQuestion(QuestionVO questionVO,String username);
 }

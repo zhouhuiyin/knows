@@ -1,19 +1,24 @@
 package cn.tedu.knows.portal.service.impl;
 
+import cn.tedu.knows.portal.exception.ServiceException;
+import cn.tedu.knows.portal.mapper.QuestionTagMapper;
 import cn.tedu.knows.portal.mapper.UserMapper;
-import cn.tedu.knows.portal.model.Question;
+import cn.tedu.knows.portal.mapper.UserQuestionMapper;
+import cn.tedu.knows.portal.model.*;
 import cn.tedu.knows.portal.mapper.QuestionMapper;
-import cn.tedu.knows.portal.model.Tag;
-import cn.tedu.knows.portal.model.User;
 import cn.tedu.knows.portal.service.IQuestionService;
 import cn.tedu.knows.portal.service.ITagService;
+import cn.tedu.knows.portal.service.IUserService;
+import cn.tedu.knows.portal.vo.QuestionVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +32,7 @@ import java.util.Map;
  * @since 2022-10-21
  */
 @Service
+@Slf4j
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> implements IQuestionService {
     @Autowired
     private UserMapper userMapper;
@@ -35,6 +41,17 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     @Autowired
     private ITagService tagService; //获得包含所有标签的tagMap
+
+    @Autowired
+    private IUserService userService;
+
+    @Autowired
+    private QuestionTagMapper questionTagMapper;
+
+    @Autowired
+    private UserQuestionMapper userQuestionMapper;
+
+
     @Override
     public PageInfo<Question> getMyQuestions(String username,Integer pageNum,Integer pageSize) {
         // 根据用户名查询用户对象
@@ -59,6 +76,71 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // 千万别忘了返回pageInfo
         return new PageInfo<>(list);
     }
+
+    @Override
+    public void saveQuestion(QuestionVO questionVO, String username) {
+        //1.根据用户名获取用户信息
+        User user = userMapper.findUserByUsername(username);
+        //2.根据用户选中的标签数组，拼接一个标签字符串
+        // {"Java基础","Java SE","面试题"}
+        // "Java基础,Java SE,面试题,"
+        StringBuilder builder = new StringBuilder();
+        for(String tagName:questionVO.getTagNames()){
+            builder.append(tagName).append(",");
+        }
+        //经过字符串拼接，我们需要删除拼接最后的, 也就是当前字符串长度-1位置的字符
+         String tagNames =builder.deleteCharAt(builder.length()-1).toString();
+        // 3.实例化Question对象,收集需要的信息(共10列)
+        Question question = new Question()
+                .setTitle(questionVO.getTitle())
+                .setContent(questionVO.getContent())
+                .setUserNickName(user.getNickname())
+                .setUserId(user.getId())
+                .setCreatetime(LocalDateTime.now())
+                .setStatus(0)
+                .setPageViews(0)
+                .setPublicStatus(0)
+                .setDeleteStatus(0)
+                .setTagNames(tagNames);
+        // 4.新增Question
+        int num = questionMapper.insert(question);
+        if(num!=1){
+            throw new ServiceException("数据库异常");
+        }
+        // 5.新增问题和标签的关系
+        // 因为要获得标签的id,所以要先将包含所有标签的Map获取过来
+        // 然后根据用户选中标签名称获得对应的标签对象以确定标签的id
+        Map<String,Tag> tagMap=tagService.getTagMap();
+        // 遍历用户选中的所有标签
+        for(String tagName : questionVO.getTagNames()){
+            // 根据tagName获得tag对象
+            Tag t=tagMap.get(tagName);
+            // 实例化QuestionTag对象并赋值然后执行新增操作
+            QuestionTag questionTag=new QuestionTag()
+                    .setQuestionId(question.getId())
+                    .setTagId(t.getId());
+            num=questionTagMapper.insert(questionTag);
+            if(num!=1){
+                throw new ServiceException("数据库异常");
+            }
+            log.debug("新增了问题和标签的关系:{}",questionTag);
+        }
+        // 6.新增问题和讲师的关系
+        Map<String,User> teacherMap=userService.getTeacherMap();
+        for(String nickname : questionVO.getTeacherNicknames()){
+            User teacher=teacherMap.get(nickname);
+            UserQuestion userQuestion=new UserQuestion()
+                    .setQuestionId(question.getId())
+                    .setUserId(teacher.getId())
+                    .setCreatetime(LocalDateTime.now());
+            num=userQuestionMapper.insert(userQuestion);
+            if(num!=1){
+                throw new ServiceException("数据库忙");
+            }
+            log.debug("新增了问题和讲师的关系:{}",userQuestion);
+        }
+    }
+
 
     //将tagNames属性转换为List<Tag>的方法
     private List<Tag> tagNamesToTags(String tagNames){
