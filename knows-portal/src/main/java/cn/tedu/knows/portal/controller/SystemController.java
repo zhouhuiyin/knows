@@ -5,6 +5,7 @@ import cn.tedu.knows.portal.service.IUserService;
 import cn.tedu.knows.portal.vo.RegisterVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,12 @@ import java.util.UUID;
 // 我们在控制器方法中可以使用它来输出信息到日志中
 @Slf4j
 public class SystemController {
+
+    // 从application.properties文件中获得配置数据的注解
+    @Value("${knows.resource.path}")
+    private File resourcePath;
+    @Value("${knows.resource.host}")
+    private String resourceHost;
 
     @Autowired
     private IUserService userService;
@@ -52,7 +59,7 @@ public class SystemController {
         String path = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDateTime.now());
         //确定要上传的文件夹路径对象
         //d://upload/2022/11/01
-        File folder = new File("d:/upload/"+path);
+        File folder = new File(resourcePath,path);
         //创建文件夹
         if(!folder.exists()){
             folder.mkdirs();
