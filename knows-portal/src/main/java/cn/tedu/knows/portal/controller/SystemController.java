@@ -72,6 +72,7 @@ public class SystemController {
         imageFile.transferTo(file);
         //4.返回结果
         return "upload complete";
+
     }
 
 
