@@ -9,6 +9,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.UUID;
 
 @RestController
 // lombok提供的注解@Slf4j,它能够在当前类的属性中添加一个记录日志的属性log
@@ -34,5 +42,37 @@ public class SystemController {
         userService.registerStudent(registerVO);
         return "ok";
     }
+
+    //文件上传的方法
+    @PostMapping("/upload/file")
+    public String upload(MultipartFile imageFile) throws IOException {
+        //1.确定文件保存的路径
+        //  会将不同日期的文件保存在不同的文件夹中,所以使用当前年月日组成文件夹名
+        // path:2022/01/04
+        String path = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDateTime.now());
+        //确定要上传的文件夹路径对象
+        //d://upload/2022/11/01
+        File folder = new File("d:/upload/"+path);
+        //创建文件夹
+        if(!folder.exists()){
+            folder.mkdirs();
+        }
+        //2.确定文件名
+        //获得原始文件名以截取文件后缀名
+        String filename=imageFile.getOriginalFilename();//原始文件名
+        //截取后缀名
+        String ext = filename.substring(filename.lastIndexOf("."));
+        //创建随机新文件名以尽量减少文件名重复几率
+        String name = UUID.randomUUID().toString()+ext;
+        //3.执行上传
+        //实例化要保存的文件对象（路径名+文件名的对象）
+        File file = new File(folder,name);
+        log.debug("文件上传路径：{}",file.getAbsolutePath());
+        //执行上传
+        imageFile.transferTo(file);
+        //4.返回结果
+        return "upload complete";
+    }
+
 
 }
