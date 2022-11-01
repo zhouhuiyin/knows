@@ -61,9 +61,7 @@ public class SystemController {
         //d://upload/2022/11/01
         File folder = new File(resourcePath,path);
         //创建文件夹
-        if(!folder.exists()){
-            folder.mkdirs();
-        }
+        folder.mkdirs();
         //2.确定文件名
         //获得原始文件名以截取文件后缀名
         String filename=imageFile.getOriginalFilename();//原始文件名
@@ -77,8 +75,15 @@ public class SystemController {
         log.debug("文件上传路径：{}",file.getAbsolutePath());
         //执行上传
         imageFile.transferTo(file);
+
+        // 我们要实现回显,必须得到上传的文件在静态资源服务器的路径
+        // 例如  http://localhost:8899/2022/01/04/dac23as....aa0d.jpg
+        //         resourceHost    /     path   /      name
+        // 我们拼接获得访问这个上传文件的url
+        String url=resourceHost+"/"+path+"/"+name;
+        log.debug("回显上传图片的url:{}",url);
         //4.返回结果
-        return "upload complete";
+        return url;
 
     }
 

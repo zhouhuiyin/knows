@@ -49,6 +49,9 @@
             data:form
         }).then(function (response){
             console.log(response.data);
+            // 现在response.data是能够显示图片的路径了
+            // 将image标签的src属性替换即可
+            $("#image").attr("src",response.data);
         })
     }
 

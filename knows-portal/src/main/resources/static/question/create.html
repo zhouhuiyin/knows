@@ -499,7 +499,32 @@
       height: 300,
       tabsize: 2,
       lang: 'zh-CN',
-      placeholder: '请输入问题的详细描述...'
+      placeholder: '请输入问题的详细描述...',
+      callbacks:{
+        //callbacks译为“回调”,其实就是我们所说的事件
+        // onImageUpload就是用户选中图片的事件
+        // 在用户选择图片时运行,files就是用户选中图片的数组
+        onImageUpload:function(files){
+          //获取数组中的图片用于上传代码
+          let file = files[0];
+          //将要上传的文件保存到表单中
+          let form =new FormData();
+          form.append("imageFile",file);
+          axios({
+            url:"/upload/file",
+            method:"post",
+            data:form
+          }).then(function (response){
+            //我们要将上传的图片显示在富文本编辑器中，需要创建一个img标签
+            let img = new Image();
+            //设置img的src属性值为上传图片的url
+            img.src=response.data;
+            //summernote提供的向内容中添加标签的方法
+            $("#summernote").summernote("insertNode",img);
+          })
+
+        }
+      }
     });
     $('select').select2({placeholder:'请选择...'});
   });
