@@ -1,6 +1,7 @@
 package cn.tedu.knows.portal.mapper;
 
 import cn.tedu.knows.portal.model.Permission;
+import cn.tedu.knows.portal.model.Role;
 import cn.tedu.knows.portal.model.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
@@ -36,6 +37,14 @@ public interface UserMapper extends BaseMapper<User> {
     // 查询返回所有讲师的方法
     @Select("select * from user where type=1")
     List<User> findTeachers();
+
+    // 根据用户id获得用户角色的方法
+    @Select("select r.id,r.name\n" +
+            "from user u\n" +
+            "left join user_role ur on u.id=ur.user_id\n" +
+            "left join role r on r.id=ur.role_id\n" +
+            "where u.id=#{id};")
+    List<Role> findUserRolesById(Integer userId);
 
 
 }

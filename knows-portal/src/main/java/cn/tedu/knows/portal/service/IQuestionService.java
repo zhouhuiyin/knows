@@ -23,4 +23,6 @@ public interface IQuestionService extends IService<Question> {
 
     //学生发布问题的方法
     void saveQuestion(QuestionVO questionVO,String username);
+
+
 }

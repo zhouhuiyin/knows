@@ -2,6 +2,7 @@ package cn.tedu.knows.portal.service.impl;
 
 import cn.tedu.knows.portal.mapper.UserMapper;
 import cn.tedu.knows.portal.model.Permission;
+import cn.tedu.knows.portal.model.Role;
 import cn.tedu.knows.portal.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 //添加注解保存到spring容器中，以方便需要的位置调用
@@ -37,6 +39,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         int i= 0;
         for(Permission p:permissions){
             auth[i]=p.getName();
+            i++;
+        }
+        //根据用户id查询用户所有角色
+        List<Role> roles = userMapper.findUserRolesById(user.getId());
+        // 数组扩容,以保证能够保存新的角色信息
+        auth= Arrays.copyOf(auth,auth.length+roles.size());
+        // 将角色信息保存在auth数组中
+        // {"/add","/delete","/save","/update",null}
+        for(Role role:roles){
+            auth[i] = role.getName();
             i++;
         }
         //5. 创建UserDetails对象,并向它的属性中赋值

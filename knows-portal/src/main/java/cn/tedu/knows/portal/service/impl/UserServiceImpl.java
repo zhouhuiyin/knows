@@ -2,6 +2,7 @@ package cn.tedu.knows.portal.service.impl;
 
 import cn.tedu.knows.portal.exception.ServiceException;
 import cn.tedu.knows.portal.mapper.ClassroomMapper;
+import cn.tedu.knows.portal.mapper.QuestionMapper;
 import cn.tedu.knows.portal.mapper.UserRoleMapper;
 import cn.tedu.knows.portal.model.Classroom;
 import cn.tedu.knows.portal.model.User;
@@ -9,6 +10,7 @@ import cn.tedu.knows.portal.mapper.UserMapper;
 import cn.tedu.knows.portal.model.UserRole;
 import cn.tedu.knows.portal.service.IUserService;
 import cn.tedu.knows.portal.vo.RegisterVO;
+import cn.tedu.knows.portal.vo.UserVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private ClassroomMapper classroomMapper;
     @Autowired
     private UserRoleMapper userRoleMapper;
+
+    @Autowired
+    private QuestionMapper questionMapper;
     @Override
     @Transactional
     public void registerStudent(RegisterVO registerVO) {
@@ -113,6 +118,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         // 千万别忘了返回teacherMap
         return teacherMap;
+    }
+
+    @Override
+    public UserVO getUserVO(String username) {
+        //根据用户名获得用户信息
+        User user = userMapper.findUserByUsername(username);
+        //根据用户id获得用户的问题数
+        int questions = questionMapper.countQuestionsByUserId(user.getId());
+        // (作业)根据用户id获得用户的收藏数
+        int collects = questionMapper.countCollectsByUserID(user.getId());
+        // 实例化UserVo对象 赋值 最后返回
+        UserVO userVO = new UserVO()
+                .setId(user.getId())
+                .setUsername(user.getUsername())
+                .setNickname(user.getNickname())
+                .setQuestions(questions)
+                .setCollections(collects);
+        return userVO;
     }
 
 
