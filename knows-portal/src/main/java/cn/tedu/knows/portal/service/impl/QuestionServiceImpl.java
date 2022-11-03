@@ -146,6 +146,33 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         }
     }
 
+    @Override
+    public PageInfo<Question> getTeacherQuestions(String username, Integer pageNum, Integer pageSize) {
+        User user = userMapper.findUserByUsername(username);
+        //设置分页条件
+        PageHelper.startPage(pageNum,pageSize);
+        // 执行查询
+        List<Question> list = questionMapper.findTeacherQuestions(user.getId());
+        //list就是查询讲师任务列表的分页结果
+        for (Question q:list){
+            List<Tag> tags=tagNamesToTags(q.getTagNames());
+            q.setTags(tags);
+        }
+        return new PageInfo<>(list);
+
+    }
+
+    @Override
+    public Question getQuestionById(Integer id) {
+        // 根据MybatisPlus提供的方法来获取Question对象
+        Question question=questionMapper.selectById(id);
+        // 获得当前Question对象的所有tags集合
+        List<Tag> tags=tagNamesToTags(question.getTagNames());
+        question.setTags(tags);
+        // 千万别忘了返回question
+        return question;
+    }
+
 
     //将tagNames属性转换为List<Tag>的方法
     private List<Tag> tagNamesToTags(String tagNames){

@@ -28,6 +28,7 @@ let questionsApp = new Vue({
                     //为question对象添加持续时间属性
                     questionsApp.updateDuration();
                     questionsApp.updateTagImage();
+                    document.documentElement.scrollTop = 0
                 }
             })
         },

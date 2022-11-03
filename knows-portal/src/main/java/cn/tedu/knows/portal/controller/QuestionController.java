@@ -8,6 +8,7 @@ import cn.tedu.knows.portal.vo.QuestionVO;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
@@ -62,4 +63,24 @@ public class QuestionController {
         // 返回运行信息
         return "ok";
     }
+
+    // 查询讲师任务列表
+    @GetMapping("/teacher")
+    // 当前登录用户必须是讲师身份才能查询讲师任务列表
+    // 使用Spring-Security提供的权限\角色验证的功能来实现限制
+    // @PreAuthorize注解设置要求当前登录用户持有ROLE_TEACHER角色才能访问
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public PageInfo<Question> teacher(
+            @AuthenticationPrincipal UserDetails user,
+            Integer pageNum){
+        Integer pageSize=8;
+        if(pageNum==null)
+            pageNum=1;
+        // 调用业务逻辑层方法
+        PageInfo<Question> pageInfo=questionService
+                .getTeacherQuestions(user.getUsername(),
+                        pageNum,pageSize);
+        return pageInfo;
+    }
+
 }
