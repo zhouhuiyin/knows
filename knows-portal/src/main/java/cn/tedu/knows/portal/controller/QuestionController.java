@@ -13,11 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -81,6 +77,22 @@ public class QuestionController {
                 .getTeacherQuestions(user.getUsername(),
                         pageNum,pageSize);
         return pageInfo;
+    }
+
+    // 根据问题id查询问题详情
+    // SpringMvc支持我们编写占位符匹配url
+    // 下面路径中{id}就是一个占位符
+    // 当一个请求例如:localhost:8080/v1/questions/149路径时
+    // 路径中/149就会自动匹配/{id}的占位符,并且149会赋值给id
+    // 我们可以在控制器方法中获得{id}的值来使用
+    @GetMapping("/{id}")
+    public Question question(
+            // 获得占位符{id}的赋值的方法
+            // 1.必须编写@PathVariable注解
+            // 2.参数的名称必须和{}中的名称一致
+            @PathVariable Integer id){
+        Question question=questionService.getQuestionById(id);
+        return  question;
     }
 
 }
