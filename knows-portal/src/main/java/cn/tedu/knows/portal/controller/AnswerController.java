@@ -1,6 +1,8 @@
 package cn.tedu.knows.portal.controller;
 
 
+import cn.tedu.knows.portal.exception.ServiceException;
+import cn.tedu.knows.portal.model.Answer;
 import cn.tedu.knows.portal.service.IAnswerService;
 import cn.tedu.knows.portal.vo.AnswerVO;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +12,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 /**
  * <p>
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022-10-21
  */
 @RestController
-@RequestMapping("/v1/answer")
+@RequestMapping("/v1/answers")
 @Slf4j
 public class AnswerController {
     @Autowired
@@ -40,14 +41,21 @@ public class AnswerController {
     // @PreAuthorize("hasRole('ROLE_TEACHER')")
     // hasRole是专门判断登录用户角色的指令
     // hasRole后面的角色名称可以省略ROLE_开头的部分
-    public String postAnswer(@Validated AnswerVO answerVO, BindingResult result, @AuthenticationPrincipal UserDetails user){
+    public Answer postAnswer(@Validated AnswerVO answerVO, BindingResult result, @AuthenticationPrincipal UserDetails user){
         log.debug("表单信息:{}",answerVO);
         if(result.hasErrors()){
             String msg = result.getFieldError().getDefaultMessage();
-            return msg;
+            throw new ServiceException(msg);
         }
         // 这里调用业务逻辑层方法
-        return  "ok";
+        return answerService.saveAnswer(answerVO,user.getUsername());
     }
+
+    //根据问题id查询回答列表
+    @GetMapping("/question/{id}")
+    public List<Answer> questionAnswers(@PathVariable Integer id){
+        return answerService.getAnswersByQuestionId(id);
+    }
+
 
 }
