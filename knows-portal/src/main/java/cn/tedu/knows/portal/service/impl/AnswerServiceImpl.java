@@ -52,10 +52,8 @@ public class AnswerServiceImpl extends ServiceImpl<AnswerMapper, Answer> impleme
 
     @Override
     public List<Answer> getAnswersByQuestionId(Integer questionId) {
-        // 实例化QueryWrapper对象,设置查询条件,并执行查询
-        QueryWrapper<Answer> query = new QueryWrapper<>();
-        query.eq("quest_id",questionId);
-        List<Answer> answers = answerMapper.selectList(query);
+        // 执行关联查询,获得包含所有评论的回答列表
+        List<Answer> answers = answerMapper.findAnswersByQuestionId(questionId);
         return answers;
     }
 }

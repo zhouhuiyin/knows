@@ -46,4 +46,24 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         //返回comment对象
         return comment;
     }
+
+    @Override
+    public boolean removeComment(Integer commentId, String username) {
+        User user = userMapper.findUserByUsername(username);
+        //判断是不是讲师
+        if(user.getType().equals(1)){
+            //如果是讲师，允许删除任何评论
+            int num = commentMapper.deleteById(commentId);
+            return num==1;
+        }
+        // 不是讲师删除评论要判断当前登录的用户是不是评论的发布者
+        // 而评论的发布者id在comment对象中,我们需要先通过id查询到它
+        Comment comment = commentMapper.selectById(commentId);
+        if(comment.getUserId().equals(user.getId())){
+            // 如果是评论的发布者在删除评论,直接删除
+            int num = commentMapper.deleteById(commentId);
+            return num==1;
+        }
+        throw new ServiceException("您不能删除别人的评论");
+    }
 }
