@@ -52,7 +52,7 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/update")
-    public Comment updateComment(@PathVariable Integer id,@Validated Comment commentVO,BindingResult result,UserDetails user){
+    public Comment updateComment(@PathVariable Integer id,@Validated Comment commentVO,BindingResult result,@AuthenticationPrincipal UserDetails user){
         log.info("接收到表单信息:{}",commentVO);
         log.debug("要修改的评论id:{}",id);
         if(result.hasErrors()){
