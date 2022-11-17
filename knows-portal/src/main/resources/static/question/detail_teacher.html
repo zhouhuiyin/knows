@@ -298,7 +298,7 @@
                     <p class="text-success fa fa-comment">
                       <span v-text="answer.comments.length">1</span>条评论</p>
                     <ul class="list-unstyled mt-3">
-                      <li class="media my-2" v-for="comment in answer.comments">
+                      <li class="media my-2" v-for="(comment,index) in answer.comments">
                         <img style="width: 50px;height: 50px;border-radius: 50%;"
                              src="../img/user.jpg" class="mr-3"
                              alt="...">
@@ -312,7 +312,7 @@
                                   style="font-size: small"></span>
                             <a class="text-primary ml-2"
                                style="font-size: small" data-toggle="collapse" href="#editCommemt1"
-                               role="button" aria-expanded="false" aria-controls="collapseExample">
+                               role="button" aria-expanded="false" aria-controls="collapseExample" :href="'#editComment'+comment.id">
                               <i class="fa fa-edit"></i>编辑
                             </a>
                             <!--老师角色或者属于本用户的评论可以删除该评论-->
@@ -323,18 +323,19 @@
                               删除
                             </a>
                             <a class="badge badge-pill badge-danger text-white" style="display: none;cursor: pointer"
-                               @click="removeComment(comment.id)">
+                               @click="removeComment(comment.id,index,answer.comments)">
                               <i class="fa fa-close"></i>
                             </a>
 
                           </p>
-                          <div class="collapse" id="editCommemt1">
+                          <div class="collapse" id="editCommemt1" :id="'editComment'+comment.id">
                             <div class="card card-body border-light">
-                              <form action="" method="post" class="needs-validation" novalidate>
+                              <form action="" method="post" class="needs-validation" novalidate
+                              @submit.prevent="updateComment(comment.id,index,answer)">
                                 <div class="form-group">
                                   <textarea class="form-control"
                                             id="textareaComment1" name="content" rows="4"
-                                            required></textarea>
+                                            required v-text="comment.content"></textarea>
                                   <div class="invalid-feedback">
                                     内容不能为空！
                                   </div>

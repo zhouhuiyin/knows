@@ -12,10 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -42,6 +39,29 @@ public class CommentController {
         //这里调用业务逻辑层方法
 
         return commentService.saveComment(commentVO,user.getUsername());
+    }
+
+    @GetMapping("/{id}/delete")
+    public String removeComment(@PathVariable Integer id,@AuthenticationPrincipal UserDetails user ){
+        boolean isDelete = commentService.removeComment(id,user.getUsername());
+        if(isDelete){
+            return "ok";
+        }else{
+            return "fail";
+        }
+    }
+
+    @PostMapping("/{id}/update")
+    public Comment updateComment(@PathVariable Integer id,@Validated Comment commentVO,BindingResult result,UserDetails user){
+        log.info("接收到表单信息:{}",commentVO);
+        log.debug("要修改的评论id:{}",id);
+        if(result.hasErrors()){
+            String msg=result.getFieldError().getDefaultMessage();
+            throw new ServiceException(msg);
+        }
+        // 这里调用业务逻辑层
+        return null;
+
     }
 
 
