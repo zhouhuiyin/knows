@@ -2,7 +2,9 @@ package cn.tedu.knows.portal.mapper;
 
 import cn.tedu.knows.portal.model.Question;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,5 +32,10 @@ public interface QuestionMapper extends BaseMapper<Question> {
             "WHERE uq.user_id=#{id} OR q.user_id=#{id}\n" +
             "ORDER BY q.createtime desc")
     List<Question> findTeacherQuestions(Integer id);
+
+    @Update("update question set status=#{status} " +
+            " where id=#{questionId}")
+    int updateStatus(@Param("status") Integer status,
+                     @Param("questionId") Integer questionId );
 
 }

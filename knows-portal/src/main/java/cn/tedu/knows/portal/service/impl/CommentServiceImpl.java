@@ -10,6 +10,7 @@ import cn.tedu.knows.portal.vo.CommentVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -66,4 +67,30 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
         throw new ServiceException("您不能删除别人的评论");
     }
+
+    @Override
+    @Transactional
+    public Comment updateComment(Integer commentId, CommentVO commentVO, String username) {
+        // 获得用户信息
+        User user=userMapper.findUserByUsername(username);
+        // 按id查询当前要修改的评论对象
+        Comment comment=commentMapper.selectById(commentId);
+        // 如果是讲师或者是评论的发布者,可以修改评论
+        if(user.getType().equals(1) ||
+                comment.getUserId().equals(user.getId())){
+            // 将要修改的属性直接赋值
+            comment.setContent(commentVO.getContent());
+            // 执行修改,将修改后的对象提交到数据库
+            int num=commentMapper.updateById(comment);
+            if(num!=1){
+                throw new ServiceException("数据库忙!");
+            }
+            // 如果num是1就是修改成功了!返回修改成功的对象
+            return comment;
+        }
+        throw new ServiceException("您不能修改别人的评论");
+
+    }
+
+
 }

@@ -57,5 +57,17 @@ public class AnswerController {
         return answerService.getAnswersByQuestionId(id);
     }
 
+    // 采纳答案的控制层方法
+    @GetMapping("/{answerId}/solved")
+    public String solved(@PathVariable Integer answerId, @AuthenticationPrincipal UserDetails user){
+        // 调用业务逻辑层方法
+        boolean accepted=answerService.accept(answerId,  user.getUsername());
+        if(accepted){
+            return "采纳完成";
+        }else{
+            return "您不能采纳别人的问题!";
+        }
+    }
+
 
 }

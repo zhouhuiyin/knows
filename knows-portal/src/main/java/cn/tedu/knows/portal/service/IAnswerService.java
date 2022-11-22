@@ -23,5 +23,7 @@ public interface IAnswerService extends IService<Answer> {
     // 根据问题id查询所有回答的方法
     List<Answer> getAnswersByQuestionId(Integer questionId);
 
+    // 根据答案id采纳答案的业务逻辑层方法
+    boolean accept(Integer answerId,String username);
 
 }

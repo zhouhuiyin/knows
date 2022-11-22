@@ -52,7 +52,7 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/update")
-    public Comment updateComment(@PathVariable Integer id,@Validated Comment commentVO,BindingResult result,@AuthenticationPrincipal UserDetails user){
+    public Comment updateComment(@PathVariable Integer id,@Validated CommentVO commentVO,BindingResult result,@AuthenticationPrincipal UserDetails user){
         log.info("接收到表单信息:{}",commentVO);
         log.debug("要修改的评论id:{}",id);
         if(result.hasErrors()){
@@ -60,10 +60,8 @@ public class CommentController {
             throw new ServiceException(msg);
         }
         // 这里调用业务逻辑层
-        return null;
-
+        return commentService.updateComment(id,commentVO,user.getUsername());
     }
-
 
 
 }
