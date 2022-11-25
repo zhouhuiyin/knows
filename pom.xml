@@ -18,6 +18,7 @@
         <module>knows-resource</module>
         <module>gateway</module>
         <module>knows-client</module>
+        <module>knows-sys</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
