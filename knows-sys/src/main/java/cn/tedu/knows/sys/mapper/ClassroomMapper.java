@@ -1,6 +1,6 @@
 package cn.tedu.knows.sys.mapper;
 
-import cn.tedu.knows.portal.model.Classroom;
+import cn.tedu.knows.commons.model.Classroom;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 

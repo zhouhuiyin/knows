@@ -15,6 +15,10 @@ spring:
           # 允许服务器名称小写
           lower-case-service-id: true
       routes: # 开始配置路由
+        - id: gateway-sys
+          uri: lb://sys-service
+          predicates:
+            - Path=/v1/**
         - id: gateway-resource  #设置路由名称,和其他任何配置无关
           # 配置路由目标服务器名称:resource-server,和nacos中注册的名称一致
           # lb是Load Balance的缩写,意思是负载均衡

@@ -27,7 +27,7 @@ let app = new Vue({
             }
             axios({
                 method:'post',
-                url:'/register',
+                url:'http://localhost:9000/v1/users/register',
                 data:form
             })
                 .then(function(r) {

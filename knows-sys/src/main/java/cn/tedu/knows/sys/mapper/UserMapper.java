@@ -1,8 +1,8 @@
 package cn.tedu.knows.sys.mapper;
 
-import cn.tedu.knows.portal.model.Permission;
-import cn.tedu.knows.portal.model.Role;
-import cn.tedu.knows.portal.model.User;
+import cn.tedu.knows.commons.model.Permission;
+import cn.tedu.knows.commons.model.Role;
+import cn.tedu.knows.commons.model.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
