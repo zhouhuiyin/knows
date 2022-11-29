@@ -15,6 +15,10 @@ spring:
           # 允许服务器名称小写
           lower-case-service-id: true
       routes: # 开始配置路由
+        - id: gateway-faq
+          uri: lb://faq-service
+          predicates:
+            - Path=/v2/**
         - id: gateway-sys
           uri: lb://sys-service
           predicates:
