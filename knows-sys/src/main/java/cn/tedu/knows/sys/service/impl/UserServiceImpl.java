@@ -132,5 +132,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return userVO;
     }
 
+    @Override
+    public User getUserByUsername(String username) {
+        return userMapper.findUserByUsername(username);
+    }
+
 
 }

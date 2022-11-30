@@ -32,4 +32,7 @@ public interface IUserService extends IService<User> {
     //根据用户名查询用户信息面板的方法
     UserVO getUserVO(String username);
 
+    // 根据用户名获得用户对象的方法
+    User getUserByUsername(String username);
+
 }

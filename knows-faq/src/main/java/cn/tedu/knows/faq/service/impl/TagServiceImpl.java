@@ -6,12 +6,13 @@ import cn.tedu.knows.faq.mapper.TagMapper;
 import cn.tedu.knows.faq.service.ITagService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <p>
@@ -23,44 +24,32 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Service
 public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagService {
+    @Resource
+    private RedisTemplate<String,List<Tag>> redisTemplate;
 
-    // 声明缓存对象
-    private List<Tag> tags=new CopyOnWriteArrayList<>();
-    // tags属性用于充当保存所有标签的缓存对象
-    // 因为TagServiceImpl默认是单例的,所以tags属性也只有一份
-    // CopyOnWriteArrayList是一个线程安全的集合类型对象,从jdk1.8开始
-
-    //声明Map类型的缓存
-    //ConcurrentHashMap是一个线程安全的Map集合类型对象,从jdk1.8开始
-    private Map<String,Tag> tagMap= new ConcurrentHashMap<>();
     @Autowired
     private TagMapper tagMapper;
     @Override
     public List<Tag> getTags() {
-        // 先判断当前tags属性是不是空集合
-        if(tags.isEmpty()){
-            synchronized (tags){
-                if(tags.isEmpty()){
-                    //如果是空集合，连接数据库查询所有标签赋值给tags
-                    List<Tag> list = tagMapper.selectList(null);
-                    tags.addAll(list);
-                    //将查询到的所有标签保存在tagMap中
-                    for(Tag t:tags){
-                        tagMap.put(t.getName(),t);
-                    }
-                    System.out.println("tags加载数据完成");
-                }
-            }
+        //先从Redis中尝试获得标签集合
+        List<Tag> tags = redisTemplate.opsForValue().get("tags");
+        // 判断获得的集合是不是null
+        if(tags==null){
+            // 如果是null表示Redis中没有所有标签集合的缓存,需要连接数据保存到Redis中
+            tags = tagMapper.selectList(null);
+            redisTemplate.opsForValue().set("tags",tags);
+            System.out.println("redis加载标签完毕！！！！！");
         }
         return tags;
     }
 
     @Override
     public Map<String, Tag> getTagMap() {
-        //判断tagMap是不是empyt
-        if(tagMap.isEmpty()){
-            //如果tagMap没有值,一定是上面的getTags()方法没有运行,所以调用它
-            getTags();
+        // 实例化一个Map对象
+        Map<String,Tag> tagMap=new HashMap<>();
+        // 调用上面获得List<Tag>的方法,遍历它为Map对象赋值
+        for(Tag t:getTags()){
+            tagMap.put(t.getName(),t);
         }
         return tagMap;
     }
