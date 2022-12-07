@@ -14,9 +14,12 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 
 @Configuration
 // 这个注解表示当前类是Oauth2标准下
@@ -43,6 +46,9 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Resource
     private PasswordEncoder passwordEncoder;
 
+    @Resource
+    private JwtAccessTokenConverter accessTokenConverter;
+
     // 配置授权服务器的各种参数
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
@@ -68,6 +74,11 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         DefaultTokenServices services=new DefaultTokenServices();
         // 设置令牌如何保存
         services.setTokenStore(tokenStore);
+        //实例化令牌增强对象
+        TokenEnhancerChain chain = new TokenEnhancerChain();
+        chain.setTokenEnhancers(Arrays.asList(accessTokenConverter));
+        //将令牌增强对象，加载到生成令牌的对象中
+        services.setTokenEnhancer(chain);
         // 设置令牌有效期(单位是秒  3600既1小时)
         services.setAccessTokenValiditySeconds(3600);
         // 配置这个令牌为哪个客户端生成
