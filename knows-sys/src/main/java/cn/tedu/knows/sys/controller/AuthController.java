@@ -20,6 +20,7 @@ public class AuthController {
     // /v1/auth/demo
     @GetMapping("/demo")
     public String demo(){
+        System.out.println("demo方法运行");
         return "controller demo";
     }
 
