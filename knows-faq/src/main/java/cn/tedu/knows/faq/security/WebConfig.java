@@ -1,8 +1,12 @@
 package cn.tedu.knows.faq.security;
 
+import cn.tedu.knows.faq.interceptor.AuthInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.annotation.Resource;
 
 //SpringMVC的配置类
 @Configuration
@@ -14,5 +18,18 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("*")         // 允许任何访问源
                 .allowedMethods("*")         // 允许所有请求方法(get\post)
                 .allowedHeaders("*");        // 允许任何请求头信息
+    }
+
+    @Resource
+    private AuthInterceptor authInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns(
+                        "/v2/questions",   // 学生发布问题
+                        "/v2/questions/my",       //学生首页问题列表
+                        "/v2/questions/teacher"   //讲师首页任务列表
+                );
     }
 }

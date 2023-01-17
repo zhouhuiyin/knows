@@ -65,5 +65,9 @@ function addDuration(item){
     }
 }
 
+// 所有页面都引用utils.js
+// 这个文件最先导入,代码中会先运行
+// 获得localStorage中保存的jwt,最后的所有js代码都可以直接使用它
+let token = localStorage.getItem("accessToken")
 
 
