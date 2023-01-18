@@ -18,9 +18,10 @@ let createQuestionApp = new Vue({
             form.append("tagNames",this.selectedTags);
             form.append("teacherNicknames",this.selectedTeachers);
             form.append("content",content);
-            console.log(form);
+            form.append("accessToken",token);
+            alert(form)
             axios({
-                url:'/v1/questions',
+                url:'http://localhost:9000/v2/questions',
                 method:'POST',
                 data:form,
             }).then(function(r){
@@ -36,7 +37,7 @@ let createQuestionApp = new Vue({
         loadTags:function () {
             console.log("loadTags");
             axios({
-                url:'/v1/tags',
+                url:'http://localhost:9000/v2/tags',
                 method: 'GET'
             }).then(function(r){
                 console.log(r);
@@ -53,7 +54,7 @@ let createQuestionApp = new Vue({
         loadTeachers:function () {
             console.log("loadTeachers");
             axios({
-                url:'/v1/users/master',
+                url:'http://localhost:9000/v1/users/master',
                 method: 'GET'
             }).then(function(r){
                 console.log(r);

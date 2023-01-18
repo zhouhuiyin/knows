@@ -45,8 +45,10 @@ public class QuestionController {
     @PostMapping("")
     public String createQuestion(
             @Validated QuestionVO questionVO,
-            BindingResult result, @AuthenticationPrincipal UserDetails user){
+            BindingResult result,
+            @AuthenticationPrincipal UserDetails user){
         log.debug("接收表单信息为:{}",questionVO);
+        log.debug("用户信息为:{}",user);
         if(result.hasErrors()){
             String msg=result.getFieldError().getDefaultMessage();
             return msg;
