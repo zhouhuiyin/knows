@@ -94,4 +94,10 @@ public class QuestionController {
         return  question;
     }
 
+    //根据用户id返回问题数的Rest接口(用于Ribbon调用的)
+    @GetMapping("/count")
+    public Integer count(Integer userId){
+        return questionService.countQuestionsByUserId(userId);
+    }
+
 }

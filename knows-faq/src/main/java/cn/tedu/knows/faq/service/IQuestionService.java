@@ -29,5 +29,8 @@ public interface IQuestionService extends IService<Question> {
     // 根据问题id查询问题详情
     Question getQuestionById(Integer id);
 
+    // 根据用户id查询问题数
+    Integer countQuestionsByUserId(Integer userId);
+
 
 }

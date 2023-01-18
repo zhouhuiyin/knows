@@ -35,6 +35,9 @@ public class WebConfig implements WebMvcConfigurer {
                 //生效路径
                 "/v1/auth/demo"
         );
-        registry.addInterceptor(authInterceptor).addPathPatterns("/v1/home");
+        registry.addInterceptor(authInterceptor).addPathPatterns(
+                "/v1/home",             //根据用户角色跳转页面
+                "/v1/users/me"          //显示用户信息面板
+                );
     }
 }

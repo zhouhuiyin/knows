@@ -181,6 +181,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         return question;
     }
 
+    @Override
+    public Integer countQuestionsByUserId(Integer userId) {
+        return questionMapper.countQuestionsByUserId(userId);
+    }
+
     private User getUser(String username){
         //利用Ribbon根据用户名获得用户对象的方法
         String url = "http://sys-service/v1/auth/user?username={1}";

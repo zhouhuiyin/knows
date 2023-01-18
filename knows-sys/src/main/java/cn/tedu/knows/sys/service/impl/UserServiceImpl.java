@@ -14,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -114,19 +116,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return teacherMap;
     }
 
+    @Resource
+    private RestTemplate restTemplate;
+
     @Override
     public UserVO getUserVO(String username) {
         //根据用户名获得用户信息
         User user = userMapper.findUserByUsername(username);
         //根据用户id获得用户的问题数
-
+        String url = "http://faq-service/v2/questions/count?userId={1}";
+        Integer questions = restTemplate.getForObject(url,Integer.class,user.getId());
         // (作业)根据用户id获得用户的收藏数
 
         // 实例化UserVo对象 赋值 最后返回
         UserVO userVO = new UserVO()
                 .setId(user.getId())
                 .setUsername(user.getUsername())
-                .setNickname(user.getNickname());
+                .setNickname(user.getNickname())
+                .setQuestions(questions);
         return userVO;
     }
 
