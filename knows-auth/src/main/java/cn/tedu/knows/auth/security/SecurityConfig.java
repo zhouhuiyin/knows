@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     // 设置全部放行,因为我们将登录和验证都交给了Oauth和Token
     // SpringSecurity不再负责验证登录的任务,所以直接放行
     @Override
@@ -21,14 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()  // 全部放行
                 .and().formLogin();        //支持表单登录
     }
-
     // 我们的令牌和一些信息需要进行加密操作
     // 向Spring容器中保存一个加密对象供框架使用
     @Bean
     public PasswordEncoder passwordEncoder(){
+
         return new BCryptPasswordEncoder();
     }
-
     // Spring Cloud Security 需要授权管理器对象
     // 当前类的父类中有这个类型对象
     // 我们要将它保存到Spring容器中,Oauth2后面的配置需要使用到它
@@ -37,4 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             throws Exception {
         return super.authenticationManagerBean();
     }
+
+
+
 }

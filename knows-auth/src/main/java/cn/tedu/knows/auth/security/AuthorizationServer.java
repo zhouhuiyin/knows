@@ -1,6 +1,7 @@
 package cn.tedu.knows.auth.security;
 
 import cn.tedu.knows.auth.service.UserDetailsServiceImpl;
+import org.omg.CORBA.PERSIST_STORE;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,29 +26,15 @@ import java.util.Arrays;
 // 这个注解表示当前类是Oauth2标准下
 // 实现授权服务器的配置类,启动授权服务器相关功能
 @EnableAuthorizationServer
-public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
+public class AuthorizationServer extends
+        AuthorizationServerConfigurerAdapter {
     // 添加依赖注入对象
     // 授权管理器
     @Resource
     private AuthenticationManager authenticationManager;
-
-    //登录用户详情类
+    // 登录用用户详情类
+    @Resource
     private UserDetailsServiceImpl userDetailsService;
-
-    // 添加保存令牌配置的对象
-    @Resource
-    private TokenStore tokenStore;
-    // 添加客户端详情对象(系统自动提供的)
-
-    @Resource
-    private ClientDetailsService clientDetailsService;
-
-    // 获得加密对象
-    @Resource
-    private PasswordEncoder passwordEncoder;
-
-    @Resource
-    private JwtAccessTokenConverter accessTokenConverter;
 
     // 配置授权服务器的各种参数
     @Override
@@ -66,7 +53,14 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .tokenServices(tokenService());
     }
 
-
+    // 添加保存令牌配置的对象
+    @Resource
+    private TokenStore tokenStore;
+    // 添加客户端详情对象(系统自动提供的)
+    @Resource
+    private ClientDetailsService clientDetailsService;
+    @Resource
+    private JwtAccessTokenConverter accessTokenConverter;
     // 配置生成令牌和保存令牌的方法
     @Bean
     public AuthorizationServerTokenServices tokenService() {
@@ -74,11 +68,16 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         DefaultTokenServices services=new DefaultTokenServices();
         // 设置令牌如何保存
         services.setTokenStore(tokenStore);
-        //实例化令牌增强对象
-        TokenEnhancerChain chain = new TokenEnhancerChain();
+        // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓新增代码↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // 实例化令牌增强对象
+        TokenEnhancerChain chain=new TokenEnhancerChain();
+        // 设置JWT转换对象到令牌增强对象中
         chain.setTokenEnhancers(Arrays.asList(accessTokenConverter));
-        //将令牌增强对象，加载到生成令牌的对象中
+        // 将令牌增强对象,加载到生成令牌的对象中
         services.setTokenEnhancer(chain);
+        // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑新增代码结束↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
         // 设置令牌有效期(单位是秒  3600既1小时)
         services.setAccessTokenValiditySeconds(3600);
         // 配置这个令牌为哪个客户端生成
@@ -87,7 +86,9 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         return services;
     }
 
-
+    // 获得加密对象
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     // 重写方法2配置客户端对应的各种权限
     // 这里的客户端指所有依赖当前授权服务器进行授权和登录的项目
@@ -120,5 +121,4 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 // 允许通过验证的客户端获得令牌
                 .allowFormAuthenticationForClients();
     }
-
 }
