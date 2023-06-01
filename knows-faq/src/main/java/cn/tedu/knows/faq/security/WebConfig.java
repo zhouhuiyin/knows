@@ -29,7 +29,12 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns(
                         "/v2/questions",   // 学生发布问题
                         "/v2/questions/my",       //学生首页问题列表
-                        "/v2/questions/teacher"   //讲师首页任务列表
+                        "/v2/questions/teacher",  //讲师首页任务列表
+                        "/v2/answers",             // 讲师回复
+                        "/v2/comments",            // 添加评论
+                        "/v2/comments/*/delete",   // 删除评论
+                        "/v2/comments/*/update",   // 修改评论
+                        "/v2/answers/*/solved"     // 采纳回答
                 );
     }
 }

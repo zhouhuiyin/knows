@@ -21,7 +21,7 @@ let questionApp=new Vue({
             //  qid   ?149  -> 149
             qid=qid.substring(1);
             axios({
-                url:"/v1/questions/"+qid,
+                url:"http://localhost:9000/v2/questions/"+qid,
                 method:"get"
             }).then(function(response){
                 questionApp.question=response.data;
@@ -54,8 +54,9 @@ let postAnswerApp=new Vue({
             let form=new FormData();
             form.append("questionId",qid);
             form.append("content",content);
+            form.append("accessToken",token);
             axios({
-                url:"/v1/answers",
+                url:"http://localhost:9000/v2/answers",
                 method:"post",
                 data:form
             }).then(function(response){
@@ -86,7 +87,7 @@ let answersApp=new Vue({
             }
             qid=qid.substring(1);
             axios({
-                url:"/v1/answers/question/" + qid,
+                url:"http://localhost:9000/v2/answers/question/" + qid,
                 method:"get"
             }).then(function(response){
                 answersApp.answers=response.data;
@@ -109,8 +110,9 @@ let answersApp=new Vue({
             let form=new FormData();
             form.append("answerId",answerId);
             form.append("content",content);
+            form.append("accessToken",token);
             axios({
-                url:"/v1/comments",
+                url:"http://localhost:9000/v2/comments",
                 method:"post",
                 data:form
             }).then(function(response){
@@ -134,8 +136,11 @@ let answersApp=new Vue({
         },
         removeComment:function(commentId,index,comments){
             axios({
-                url:"/v1/comments/"+commentId+"/delete",
-                method:"get"
+                url:"http://localhost:9000/v2/comments/"+commentId+"/delete",
+                method:"get",
+                params:{
+                    accessToken:token
+                }
             }).then(function(response){
                 console.log(response.data);
                 if(response.data=="ok"){
@@ -158,8 +163,9 @@ let answersApp=new Vue({
             let form=new FormData();
             form.append("answerId",answer.id);
             form.append("content",content);
+            form.append("accessToken",token);
             axios({
-                url:"/v1/comments/"+commentId+"/update",
+                url:"http://localhost:9000/v2/comments/"+commentId+"/update",
                 method:"post",
                 data:form
             }).then(function(response){
@@ -184,8 +190,11 @@ let answersApp=new Vue({
         },
         answerSolved:function(answerId){
             axios({
-                url:"/v1/answers/"+answerId+"/solved",
-                method:"get"
+                url:"http://localhost:9000/v2/answers/"+answerId+"/solved",
+                method:"get",
+                params:{
+                    accessToken:token
+                }
             }).then(function(response){
                 console.log(response.data);
             })
