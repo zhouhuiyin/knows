@@ -32,5 +32,8 @@ public interface IQuestionService extends IService<Question> {
     // 根据用户id查询问题数
     Integer countQuestionsByUserId(Integer userId);
 
+    // 分页查询Question表所有数据
+    PageInfo<Question> getQuestions(Integer pageNum,Integer pageSize);
+
 
 }

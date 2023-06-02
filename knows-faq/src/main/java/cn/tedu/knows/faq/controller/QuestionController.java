@@ -14,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  *  前端控制器
@@ -98,6 +100,15 @@ public class QuestionController {
     @GetMapping("/count")
     public Integer count(Integer userId){
         return questionService.countQuestionsByUserId(userId);
+    }
+
+    // 分页查询全部question数据的方法
+    @GetMapping("/page")
+    public List<Question> questions(Integer pageNum, Integer pageSize){
+        // 调用业务逻辑层编写好的分页查询的方法即可
+        PageInfo<Question> pageInfo=questionService.getQuestions(
+                pageNum,pageSize);
+        return pageInfo.getList();
     }
 
 }

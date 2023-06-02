@@ -80,6 +80,15 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     @Override
+    public PageInfo<Question> getQuestions(Integer pageNum, Integer pageSize) {
+        // 分页查询设置
+        PageHelper.startPage(pageNum,pageSize);
+        List<Question> list=questionMapper.selectList(null);
+        // 别忘了编写返回值
+        return new PageInfo<>(list);
+    }
+
+    @Override
     // 添加事务注解
     // 实现效果:当前方法中所有sql操作要么都执行,要么都不执行
     // 只要方法运行过程中发生异常,那么已经执行的sql语句都会"回滚"

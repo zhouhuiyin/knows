@@ -22,6 +22,7 @@
         <module>knows-commons</module>
         <module>knows-faq</module>
         <module>knows-auth</module>
+        <module>knows-search</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
