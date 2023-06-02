@@ -79,14 +79,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         return new PageInfo<>(list);
     }
 
-    @Override
-    public PageInfo<Question> getQuestions(Integer pageNum, Integer pageSize) {
-        // 分页查询设置
-        PageHelper.startPage(pageNum,pageSize);
-        List<Question> list=questionMapper.selectList(null);
-        // 别忘了编写返回值
-        return new PageInfo<>(list);
-    }
+
 
     @Override
     // 添加事务注解
@@ -193,6 +186,15 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     @Override
     public Integer countQuestionsByUserId(Integer userId) {
         return questionMapper.countQuestionsByUserId(userId);
+    }
+
+    @Override
+    public PageInfo<Question> getQuestions(Integer pageNum, Integer pageSize) {
+        // 分页查询设置
+        PageHelper.startPage(pageNum,pageSize);
+        List<Question> list=questionMapper.selectList(null);
+        // 别忘了编写返回值
+        return new PageInfo<>(list);
     }
 
     private User getUser(String username){
