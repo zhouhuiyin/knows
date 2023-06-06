@@ -115,7 +115,7 @@ GET http://localhost:9200/questions/_doc/4
 
 
 ### 搜索 ES
-POST http://localhost:9200/questions/_search
+POST http://localhost:9200/knows/_search
 Content-Type: application/json
 
 {
@@ -175,4 +175,29 @@ Content-Type: application/json
       ]
     }
   },"sort":[{"price":"desc"}]
+}
+
+### 条件搜索，查询用户11 或者 公开的 同时 标题或者内容中包含Java的问题
+POST http://localhost:9200/knows/_search
+Content-Type: application/json
+
+
+{
+  "query": {
+    "bool": {
+      "must": [{
+        "bool": {
+          "should": [
+          {"match": {"title": "java"}},
+          {"match": {"content": "java"}}]
+        }
+      }, {
+        "bool": {
+          "should": [
+          {"term": {"publicStatus": 1}},
+          {"term": {"userId": 11}}]
+        }
+      }]
+    }
+  }
 }

@@ -111,4 +111,17 @@ public class QuestionController {
         return pageInfo.getList();
     }
 
+    // 根据指定页面大小,计算总页数的方法
+    @GetMapping("/page/count")
+    public int PageCount(Integer pageSize){
+        // 查询总条数
+        // MybatisPlus框架提供了直接返回当前表总条数的方法:count()
+        int count = questionService.count();
+        //       return count%pageSize==0    ? count/pageSize
+//                                    : count/pageSize+1;
+        return (count+pageSize-1)/pageSize;
+
+    }
+
+
 }
