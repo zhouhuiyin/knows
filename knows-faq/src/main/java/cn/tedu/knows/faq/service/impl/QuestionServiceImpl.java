@@ -3,6 +3,7 @@ package cn.tedu.knows.faq.service.impl;
 
 import cn.tedu.knows.commons.exception.ServiceException;
 import cn.tedu.knows.commons.model.*;
+import cn.tedu.knows.faq.kafka.QuestionProducer;
 import cn.tedu.knows.faq.mapper.QuestionMapper;
 import cn.tedu.knows.faq.mapper.QuestionTagMapper;
 import cn.tedu.knows.faq.mapper.UserQuestionMapper;
@@ -15,6 +16,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -52,6 +54,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     @Resource
     private RestTemplate restTemplate;
+
+    @Resource
+    private QuestionProducer questionProducer;
 
 
     @Override
@@ -115,6 +120,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         if(num!=1){
             throw new ServiceException("数据库异常");
         }
+        //将刚刚新增完成的问题,发送到kafka
+        //以便search模块接收并新增到Es
+        questionProducer.sendQuestion(question);
+
         // 5.新增问题和标签的关系
         // 因为要获得标签的id,所以要先将包含所有标签的Map获取过来
         // 然后根据用户选中标签名称获得对应的标签对象以确定标签的id

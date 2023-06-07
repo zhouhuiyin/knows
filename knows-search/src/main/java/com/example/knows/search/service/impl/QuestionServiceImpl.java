@@ -62,6 +62,11 @@ public class QuestionServiceImpl implements IQuestionService {
         return Pages.pageInfo(page);
     }
 
+    @Override
+    public void saveQuestion(QuestionVO questionVO) {
+        questionRepository.save(questionVO);
+    }
+
     // 根据tagNames属性获得标签集合的方法
     private List<Tag> tagNamesToTags(String tagNames){
         // tagNames:"java基础,javaSE,面试题"

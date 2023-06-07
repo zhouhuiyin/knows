@@ -19,7 +19,6 @@ let createQuestionApp = new Vue({
             form.append("teacherNicknames",this.selectedTeachers);
             form.append("content",content);
             form.append("accessToken",token);
-            alert(form)
             axios({
                 url:'http://localhost:9000/v2/questions',
                 method:'POST',
@@ -27,6 +26,7 @@ let createQuestionApp = new Vue({
             }).then(function(r){
                 console.log(r.data);
                 if(r.data=="ok"){
+                    alert("问题添加成功！！")
                     location.href="/index_student.html";
                 }else {
                     console.log(r.data);

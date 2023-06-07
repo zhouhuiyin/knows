@@ -9,4 +9,7 @@ public interface IQuestionService {
 
     // 按用户输入的关键字进行搜索功能的业务逻辑层方法
     PageInfo<QuestionVO> search(String key, String username, Integer pageNum, Integer pageSize);
+
+    // 新增QuestionVO到ES的业务逻辑层方法
+    void saveQuestion(QuestionVO questionVO);
 }
